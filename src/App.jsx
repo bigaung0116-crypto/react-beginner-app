@@ -1,22 +1,38 @@
 import { useState } from 'react';
 import Header from "./components/Header";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 function App() {
   const [userInput, setUserInput] = useState('');
   const [tone, setTone] = useState("Professional"); 
   const [generatedText, setGeneratedText] = useState("");
 
-  const handleGenerate = () => {
-    if (!userInput) return alert("Please type something first");
-    
-    // Backticks (`) ကို သုံးရပါမယ်
-    const mockAIResponse = `AI is processing in a ${tone} tone...
-    
-Topic: ${userInput}
+  const handleGenerate = async () => {
+    // စာရိုက်ထားခြင်း မရှိရင် Alert ပြပြီး ဒီအတိုင်း ရပ်လိုက်မယ်
+    if (!userInput.trim()) {
+      alert("Please type something!");
+      return;
+    }
 
-[DAY 4 ဒီနေရာမှာ တကယ် AI နဲ့ ချိတ်ဆက်သွားမှာပါ]`;
-    
-    setGeneratedText(mockAIResponse);
+    setGeneratedText("AI is thinking… ");
+
+    try {
+      // API Key နှင့် Model ကို စနစ်တကျ ပြန်ပြင်ထားပါတယ်
+      const genAI = new GoogleGenerativeAI("AIzaSyDnFRmTluG9T9epSO4GIV-8diQev9JNQxo");
+      // အရင်က "gemini-1.5-flash" သို့မဟုတ် "gemini-1.5-flash-001" နေရာမှာ ဒါကို ပြောင်းရေးပါ
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      // single quote မဟုတ်ဘဲ Backtick ( ` ) ကို သုံးထားပါတယ်
+      const prompt = `Write a ${tone} content about: ${userInput}`;
+      
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+      
+      setGeneratedText(text); // () အပိုကို ဖြုတ်လိုက်ပါတယ်
+    } catch (error) {
+      console.error("Error:", error);
+      setGeneratedText("Something went wrong. Please check your API key!");
+    } // catch block ရဲ့ တွန့်ကွင်းအပိတ် ထည့်ပေးထားပါတယ်
   };
 
   return (
@@ -57,12 +73,12 @@ Topic: ${userInput}
           style={{
             marginTop: '10px',
             padding: '7px 20px',
-            cursor: 'pointer', // Spelling ပြင်လိုက်ပါတယ်
+            cursor: 'pointer',
             background: '#4CAF50',
             color: 'white',
             border: 'none',
             borderRadius: '4px',
-            fontWeight: 'bold' // Spelling ပြင်လိုက်ပါတယ်
+            fontWeight: 'bold'
           }}
         >
           Generate
@@ -77,7 +93,6 @@ Topic: ${userInput}
             borderRadius: '4px'
           }}>
             <strong>AI Response Preview:</strong>
-            {/* Tag ရဲ့ style object ကို သေချာပြန်ပိတ်ထားပါတယ် */}
             <p style={{ whiteSpace: 'pre-line', marginTop: '10px' }}>
               {generatedText}
             </p>
