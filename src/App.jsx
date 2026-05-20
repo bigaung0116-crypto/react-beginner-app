@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Header from "./components/Header";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import ReactMarkdown from 'react-markdown';
 
 function App() {
   const [userInput, setUserInput] = useState('');
@@ -18,7 +19,7 @@ function App() {
 
     try {
       // API Key နှင့် Model ကို စနစ်တကျ ပြန်ပြင်ထားပါတယ်
-      const genAI = new GoogleGenerativeAI("AIzaSyDnFRmTluG9T9epSO4GIV-8diQev9JNQxo");
+      const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
       // အရင်က "gemini-1.5-flash" သို့မဟုတ် "gemini-1.5-flash-001" နေရာမှာ ဒါကို ပြောင်းရေးပါ
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       // single quote မဟုတ်ဘဲ Backtick ( ` ) ကို သုံးထားပါတယ်
@@ -93,9 +94,10 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
             borderRadius: '4px'
           }}>
             <strong>AI Response Preview:</strong>
-            <p style={{ whiteSpace: 'pre-line', marginTop: '10px' }}>
-              {generatedText}
-            </p>
+            <div style={{ marginTop: '15px', lineHeight: '1.6', textAlign: 'left' }}>
+              <ReactMarkdown>{generatedText}</ReactMarkdown>
+            </div>
+            
           </div>
         )}
       </main>
