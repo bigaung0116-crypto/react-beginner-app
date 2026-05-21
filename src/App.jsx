@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Header from "./components/Header";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import ReactMarkdown from 'react-markdown';
+import './App.css';
 
 function App() {
   const [userInput, setUserInput] = useState('');
@@ -39,65 +40,38 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
   return (
     <div>
       <Header />
-      <main style={{ padding: '20px' }}>
-        <h2> Day 3 AI APP logic</h2>
+      <main className="app-container">
+        <h2 className="app-title">Day6: Premium AI Content Generator</h2>
         
         <textarea
+          className="input-textarea"
           placeholder='ဒီနေရာမှာတစ်ခုခုရေးပါ'
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
-          style={{ width: '100%', height: '100px', padding: '10px' }}
         />
 
-        <div style={{ marginTop: '10px' }}>
+        <div className="tone-selector">
           <label>Choose Tone: </label>
+          <select className="tone-select" value={tone} onChange={(e) => setTonw(e.target.value)}></select>
           <select value={tone} onChange={(e) => setTone(e.target.value)}>
             <option value="Professional">Professional</option>
             <option value="Funny">Funny</option>
             <option value="Romantic">Romantic</option>
           </select>
         </div>
-
-        <div style={{ 
-          marginTop: '20px', 
-          padding: '15px', 
-          background: '#f4f4f4', 
-          borderRadius: '8px' 
-        }}>
-          <strong>သင်ရိုက်နေတဲ့စာသား:</strong>
-          <p>{userInput}</p>
-          <p><strong>Selected Tone: </strong>{tone}</p>
-        </div>
-
-        <button 
-          onClick={handleGenerate}
-          style={{
-            marginTop: '10px',
-            padding: '7px 20px',
-            cursor: 'pointer',
-            background: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            fontWeight: 'bold'
-          }}
-        >
-          Generate
-        </button>
-
+        <button className="generate-button" onClick={handleGenerate}>Generate Content</button>
+        {userInput && (
+          <div className="preview-box">
+            <strong>Live Input Preview:</strong> ({tone})
+            <p style={{ margin: '5px 0 0 0' }}>{userInput}</p>
+          </div>
+        )}
         {generatedText && (
-          <div style={{
-            marginTop: '20px',
-            padding: '15px',
-            background: '#e3f2fd',
-            borderLeft: '5px solid #2196f3',
-            borderRadius: '4px'
-          }}>
-            <strong>AI Response Preview:</strong>
-            <div style={{ marginTop: '15px', lineHeight: '1.6', textAlign: 'left' }}>
+          <div className="response-container">
+            <strong> AI Response Preview:</strong>
+            <div style={{ marginTop: '15px', lineHeight: '1.7', textAlign: 'left' }}>
               <ReactMarkdown>{generatedText}</ReactMarkdown>
             </div>
-            
           </div>
         )}
       </main>
